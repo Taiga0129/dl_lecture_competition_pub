@@ -49,6 +49,9 @@ class EVFlowNet(nn.Module):
         inputs = torch.cat([inputs, skip_connections['skip3']], dim=1)
         inputs, flow = self.decoder1(inputs)
         flow_dict['flow0'] = flow.clone()
+        upsample = nn.Upsample(scale_factor=8, mode="bilinear")
+        flow0 = upsample(flow.clone())
+        print("flow0_size = ", flow0.size())
 
         inputs = torch.cat([inputs, skip_connections['skip2']], dim=1)
         inputs, flow = self.decoder2(inputs)
@@ -62,7 +65,7 @@ class EVFlowNet(nn.Module):
         inputs, flow = self.decoder4(inputs)
         flow_dict['flow3'] = flow.clone()
 
-        return flow
+        return flow , flow0
         
 
 # if __name__ == "__main__":
